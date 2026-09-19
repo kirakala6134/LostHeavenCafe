@@ -1,0 +1,82 @@
+@model List<MenuKategori>
+@{ ViewData["Title"] = "Menü Yönetimi"; }
+
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="card" style="background:#fdecea; color:#a94442;">@TempData["HataMesaji"]</div>
+}
+
+<div class="card">
+    <h2>Yeni Ürün Ekle</h2>
+    <p style="color:#666;">
+        Resim eklemek zorunlu değil ama eklersen QR menüde daha güzel durur —
+        ya bir resim URL'si yapıştır, ya da bilgisayarından bir dosya seç
+        (ikisini birden doldurursan dosya öncelikli olur).
+    </p>
+    <form asp-action="UrunEkle" method="post" enctype="multipart/form-data" style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+        <div style="flex:1; min-width:160px;">
+            <label>Kategori</label>
+            <select name="kategoriId" style="width:100%; padding:8px; border-radius:6px; border:1px solid #ccc;">
+                @foreach (var k in Model)
+                {
+                    <option value="@k.Id">@k.Ad</option>
+                }
+            </select>
+        </div>
+        <div style="flex:1; min-width:160px;">
+            <label>Ürün Adı</label>
+            <input type="text" name="ad" required />
+        </div>
+        <div style="width:120px;">
+            <label>Fiyat (₺)</label>
+            <input type="number" step="0.01" name="fiyat" required />
+        </div>
+        <div style="flex:1; min-width:200px;">
+            <label>Resim URL (opsiyonel)</label>
+            <input type="text" name="resimUrl" placeholder="https://..." />
+        </div>
+        <div style="flex:1; min-width:200px;">
+            <label>veya Resim Dosyası</label>
+            <input type="file" name="resimDosyasi" accept="image/*" />
+        </div>
+        <button type="submit" class="btn yesil">+ Ekle</button>
+    </form>
+</div>
+
+@foreach (var kategori in Model)
+{
+    <div class="card">
+        <h3>@kategori.Ad</h3>
+        <table>
+            <thead><tr><th>Ürün</th><th>Fiyat</th><th>Durum</th><th>Resim</th><th></th></tr></thead>
+            <tbody>
+            @foreach (var urun in kategori.Urunler)
+            {
+                <tr>
+                    <td>@urun.Ad</td>
+                    <td>@urun.Fiyat.ToString("0.00") ₺</td>
+                    <td>@(urun.Aktif ? "Menüde" : "Pasif")</td>
+                    <td style="min-width:280px;">
+                        <form asp-action="UrunResimGuncelle" method="post" enctype="multipart/form-data" style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+                            <input type="hidden" name="urunId" value="@urun.Id" />
+                            <input type="text" name="resimUrl" placeholder="URL yapıştır" value="@(urun.Resim != null && urun.Resim.StartsWith("http") ? urun.Resim : "")" style="width:140px; padding:4px;" />
+                            <input type="file" name="resimDosyasi" accept="image/*" style="width:110px;" />
+                            <button type="submit" class="btn kucuk">Kaydet</button>
+                        </form>
+                    </td>
+                    <td style="display:flex; gap:6px;">
+                        <form asp-action="UrunDurumDegistir" method="post">
+                            <input type="hidden" name="urunId" value="@urun.Id" />
+                            <button type="submit" class="btn kucuk">@(urun.Aktif ? "Pasif Yap" : "Aktif Yap")</button>
+                        </form>
+                        <form asp-action="UrunSil" method="post" onsubmit="return confirm('Bu ürünü tamamen silmek istediğine emin misin?');">
+                            <input type="hidden" name="urunId" value="@urun.Id" />
+                            <button type="submit" class="btn kucuk kirmizi">Sil</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

@@ -1,0 +1,39 @@
+@{ ViewData["Title"] = "QR Kod Oluştur"; }
+
+<div class="card">
+    <h2>QR Kod Oluştur</h2>
+    <p style="color:#666;">
+        Bu sayfa, girdiğin herhangi bir adres için anında QR kodu üretir — siteyi
+        gerçek bir alan adına taşıdığında ya da yerel ağ (WiFi) üzerinden test
+        ederken tekrar tekrar buraya gelip yeni QR üretebilirsin, dışarıdan bir
+        siteye ihtiyacın yok.
+    </p>
+
+    <label>QR'ın Gideceği Adres</label>
+    <input type="text" id="qrAdres" value="@ViewBag.VarsayilanAdres" />
+    <button class="btn yesil" style="margin-top:12px;" onclick="qrUret()">QR Kodu Üret</button>
+
+    <div id="qrSonuc" style="margin-top:24px; text-align:center;"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    function qrUret() {
+        const adres = document.getElementById('qrAdres').value.trim();
+        const sonuc = document.getElementById('qrSonuc');
+        sonuc.innerHTML = '';
+        if (!adres) return;
+
+        const kutu = document.createElement('div');
+        sonuc.appendChild(kutu);
+        new QRCode(kutu, { text: adres, width: 220, height: 220 });
+
+        const not = document.createElement('p');
+        not.style.color = '#666';
+        not.style.marginTop = '10px';
+        not.textContent = 'Sağ tıklayıp "Resmi Kaydet" diyerek indirebilir, ya da doğrudan yazdırabilirsin.';
+        sonuc.appendChild(not);
+    }
+    // Sayfa açılır açılmaz varsayılan adres için bir QR göster.
+    window.onload = qrUret;
+</script>

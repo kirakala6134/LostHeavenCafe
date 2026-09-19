@@ -1,0 +1,62 @@
+@model List<Hatirlatma>
+@{ ViewData["Title"] = "Hatırlatmalar"; }
+
+<div class="card">
+    <h2>Yeni Hatırlatma / Not</h2>
+    <p style="color:#666;">
+        Toptancının ne zaman geleceği, sipariş edilmesi gereken bir şey,
+        yapılacak bir iş — tarihiyle birlikte buraya not düşebilirsin.
+    </p>
+    <form asp-action="Ekle" method="post" style="display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;">
+        <div style="width:170px;">
+            <label>Tarih</label>
+            <input type="date" name="tarih" required />
+        </div>
+        <div style="flex:1; min-width:180px;">
+            <label>Başlık</label>
+            <input type="text" name="baslik" placeholder="Örn: Toptancı geliyor" required />
+        </div>
+        <div style="flex:2; min-width:220px;">
+            <label>Not (opsiyonel)</label>
+            <input type="text" name="not" placeholder="Detay ekleyebilirsin" />
+        </div>
+        <button type="submit" class="btn yesil">+ Ekle</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Liste</h3>
+    @if (!Model.Any())
+    {
+        <p style="color:#666;">Henüz bir hatırlatma yok.</p>
+    }
+    else
+    {
+        <table>
+            <thead><tr><th>Tarih</th><th>Başlık</th><th>Not</th><th></th><th></th></tr></thead>
+            <tbody>
+            @foreach (var h in Model)
+            {
+                var gecmisMi = !h.TamamlandiMi && h.Tarih.Date < DateTime.Today;
+                <tr style="@(h.TamamlandiMi ? "opacity:0.5; text-decoration:line-through;" : (gecmisMi ? "color:#d9534f;" : ""))">
+                    <td>@h.Tarih.ToString("dd.MM.yyyy")</td>
+                    <td>@h.Baslik</td>
+                    <td>@h.Not</td>
+                    <td>
+                        <form asp-action="TamamlandiIsaretle" method="post">
+                            <input type="hidden" name="id" value="@h.Id" />
+                            <button type="submit" class="btn kucuk">@(h.TamamlandiMi ? "Geri Al" : "Tamamlandı")</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form asp-action="Sil" method="post" onsubmit="return confirm('Silinsin mi?');">
+                            <input type="hidden" name="id" value="@h.Id" />
+                            <button type="submit" class="btn kucuk kirmizi">Sil</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>

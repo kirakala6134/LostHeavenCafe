@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <title>Giriş Yap - Lost Heaven Cafe</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="panel-body">
+    <div class="container" style="max-width:380px;">
+        <div class="card" style="text-align:center;">
+            <h2>🌊 Lost Heaven Cafe</h2>
+            <p>Garson / İşletmeci Girişi</p>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div style="color:#d9534f; margin-bottom:10px;">
+                    @foreach (var hata in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@hata.ErrorMessage</div>
+                    }
+                </div>
+            }
+            <form method="post">
+                <input type="email" name="email" placeholder="E-posta" required />
+                <input type="password" name="sifre" placeholder="Şifre" required style="margin-top:10px;" />
+                <button class="btn yesil" type="submit" style="width:100%; margin-top:16px;">Giriş Yap</button>
+            </form>
+            <p style="margin-top:14px;"><a class="auth-link" asp-controller="Account" asp-action="Register">Hesabın yok mu? Kayıt ol</a></p>
+        </div>
+    </div>
+</body>
+</html>

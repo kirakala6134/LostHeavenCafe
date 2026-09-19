@@ -1,0 +1,56 @@
+@model KasaGorunumu
+@{ ViewData["Title"] = "Kasa"; }
+
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h2 style="margin:0;">Kasa</h2>
+        <span class="canli-saat koyu" id="canliSaat"></span>
+    </div>
+    <p style="color:#666;">
+        Aktif iş günü başlangıcı: @Model.AktifGunBaslangici.ToString("dd.MM.yyyy HH:mm")
+    </p>
+</div>
+
+<div class="card">
+    <div class="toplam-kutu" style="margin-bottom:10px;">
+        <span>Günlük Toplam</span>
+        <span>@Model.GunlukToplam.ToString("0.00") ₺</span>
+    </div>
+    <div class="toplam-kutu" style="background: var(--deniz-mavi);">
+        <span>Ana Toplam (Tüm Zamanlar)</span>
+        <span>@Model.AnaToplam.ToString("0.00") ₺</span>
+    </div>
+
+    <form asp-action="GunuBitir" method="post" onsubmit="return confirm('Günü bitirmek istediğine emin misin? Günlük toplam sıfırlanacak, ana toplam etkilenmeyecek.');" style="margin-top:20px;">
+        <button type="submit" class="btn kirmizi">Günü Bitir</button>
+    </form>
+</div>
+
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0;">Yaklaşan Hatırlatmalar</h3>
+        <a asp-controller="Hatirlatmalar" asp-action="Index" class="btn kucuk" style="margin:0;">Tümünü Gör</a>
+    </div>
+    @if (!Model.YaklasanHatirlatmalar.Any())
+    {
+        <p style="color:#666; margin-top:10px;">Bekleyen bir hatırlatma yok.</p>
+    }
+    else
+    {
+        <ul style="margin-top:10px; padding-left:20px;">
+        @foreach (var h in Model.YaklasanHatirlatmalar)
+        {
+            <li><b>@h.Tarih.ToString("dd.MM.yyyy")</b> — @h.Baslik @(string.IsNullOrEmpty(h.Not) ? "" : $"({h.Not})")</li>
+        }
+        </ul>
+    }
+</div>
+
+<script>
+    function canliSaatiGuncelle() {
+        const el = document.getElementById('canliSaat');
+        if (el) el.textContent = new Date().toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'medium' });
+    }
+    canliSaatiGuncelle();
+    setInterval(canliSaatiGuncelle, 1000);
+</script>

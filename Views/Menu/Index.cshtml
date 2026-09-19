@@ -1,0 +1,45 @@
+@model List<MenuKategori>
+@{
+    ViewData["Title"] = "Menü";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost Heaven Cafe — Menü</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="menu-body">
+
+    <div class="menu-hero">
+        <img src="~/images/logo.png" alt="Lost Heaven Cafe" />
+        <h1>Lost Heaven Cafe</h1>
+        <p>Armutlu, Yalova — Deniz Kenarında Çay Bahçesi</p>
+    </div>
+
+    <div class="menu-container">
+        @foreach (var kategori in Model)
+        {
+            <h2 class="kategori-baslik">@kategori.Ad</h2>
+            @foreach (var urun in kategori.Urunler)
+            {
+                var resimSrc = string.IsNullOrEmpty(urun.Resim)
+                    ? null
+                    : (urun.Resim.StartsWith("http") ? urun.Resim : Url.Content("~/images/urunler/" + urun.Resim));
+
+                <div class="urun-karti">
+                    @if (resimSrc != null)
+                    {
+                        <img src="@resimSrc" alt="@urun.Ad" onerror="this.style.display='none'" />
+                    }
+                    <span class="urun-adi">@urun.Ad</span>
+                    <span class="urun-fiyat">@urun.Fiyat.ToString("0.00") ₺</span>
+                </div>
+            }
+        }
+    </div>
+
+</body>
+</html>
