@@ -32,22 +32,3 @@ panelden takip edebileceğim bir sistem kurmak.
   satılmışsa geçmiş ciro bozulmasın diye silinmesine izin vermiyor, o zaman
   Pasif Yap kullanman lazım).
 - **QR Kod Oluştur**: İstediğin adres için anında QR üretip indirebiliyorsun.
-
-## Kendime not
-
-Bunu tamamen local kullanacaksam QR'ı `https://localhost:PORT/Menu`'ye değil,
-bilgisayarımın kafenin WiFi'ındaki **yerel IP adresine** yönlendirmem lazım
-(örn. `http://192.168.1.50:5000/Menu`) — çünkü "localhost" her cihazda sadece
-kendi kendini işaret eder, telefon "localhost" dediğinde kendi telefonuna
-bakar, bilgisayara değil. Domain almak bunu değiştirmez; local kullanım için
-domaine hiç gerek yok. Ayrıca port numarası her `F5`'te değişebiliyor, o
-yüzden `launchSettings.json`'da portu sabitlemek işini kolaylaştırır.
-
-## Şema Değiştirirsen (Migration)
-
-Modelleri değiştirirsen `EnsureCreated()` yeterli olmaz:
-
-```
-dotnet ef migrations add IlkSurum
-dotnet ef database update
-```
