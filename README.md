@@ -6,4 +6,5 @@ Hep bu tarz sorunlarla karşılaşıyorduk. Ben de o zamanlar bu kadar büyük b
 
 Güzel bir otomasyon bence. Masa no, masalardaki adisyon sisteminin aynısı. Hem artık garsonun matematik hesabı yerine verilerle ilerliyoruz. Saati gösteriyor, günlük parayı ve toplam parayı hesaplıyor. Takvim sayesinde maaş ödeme, toptancıların gelme tarihleri kayıt altına alınıyor. Menü gayet kolayca düzenlenebiliyor. QR menümüz bile var. Ayrıca ApplyBAU için de bir avantaj olur bence; iş süreç otomasyon, sorun çözme vesaire :)
 
+Not: Proje Yazın yürürlüğe girecek
 
