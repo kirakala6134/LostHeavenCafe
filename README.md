@@ -1,10 +1,43 @@
 # Lost Heaven Cafe
 
-Dayımın çay bahçesinde yazın yardım amaçlı çalışıyordum. Yazlık bir mekandı, bu yüzden çok da gelişmiş değildi. Masalarda masa no bile yoktu, QR kod da yoktu. Toptancı gelecek elle kaydediyorduk; ne lazım, ne eksik, bugün ne kadar kazanıldı, toplam ne kadar? 
+Yalova Armutlu'daki bir çay bahçesi için hazırlanmış QR menü ve masa takip uygulamasıdır.
 
-Hep bu tarz sorunlarla karşılaşıyorduk. Ben de o zamanlar bu kadar büyük bir proje yapmayı hem gözüm yemiyor hem de üşeniyordum. Sonra dedim ki neden yapmıyorum, hem sevgili yapay zeka bu kadar gelişmişken.
+Amaç: Mekânda masa numaraları bulunmuyor, adisyonlar kâğıt üzerinde elle tutuluyor ve müşteriler menüye kolay ulaşamıyordu. Uygulama bu sorunları çözmek için hazırlanmıştır.
 
-Güzel bir otomasyon bence. Masa no, masalardaki adisyon sisteminin aynısı. Hem artık garsonun matematik hesabı yerine verilerle ilerliyoruz. Saati gösteriyor, günlük parayı ve toplam parayı hesaplıyor. Takvim sayesinde maaş ödeme, toptancıların gelme tarihleri kayıt altına alınıyor. Menü gayet kolayca düzenlenebiliyor. QR menümüz bile var. Ayrıca ApplyBAU için de bir avantaj olur bence; iş süreç otomasyon, sorun çözme vesaire :)
+Özellikler:
 
-Not: Proje Yazın yürürlüğe girecek
+QR menü: Müşteriler QR kodu okutarak giriş yapmadan menüyü görüntüler.
+Menü kategorilere ayrılmıştır; her üründe ad, fiyat ve fotoğraf bulunur.
 
+Masa takibi: 30 masa tek ekranda listelenir. Boş masalar yeşil, dolu masalar kırmızı gösterilir.
+Masaya tıklanınca ürün eklenir veya çıkarılır, hesap toplamı otomatik hesaplanır.
+Hesap kapatıldığında masa boşa alınır ve adisyon kayıt altında tutulur.
+Açık hesaplar, program kapatılsa bile silinmez.
+
+Kasa: Günlük toplam ve genel toplam ayrı gösterilir.
+"Günü Bitir" işlemi yalnızca günlük toplamı sıfırlar, genel toplam korunur.
+Güncel tarih ve saat ekranda canlı olarak görünür.
+
+Hatırlatmalar: Tarihli notlar eklenir (örneğin toptancının geliş günü).
+Tamamlanan hatırlatmalar işaretlenir, tarihi geçenler kırmızı gösterilir.
+Yaklaşan hatırlatmalar kasa ekranında da görünür.
+
+Menü yönetimi: Yeni ürün eklenir; ürün resmi, web adresi veya bilgisayardan dosya olarak yüklenebilir.
+Ürün geçici olarak menüden kaldırılabilir ("Pasif Yap") veya tamamen silinebilir. Daha önce satılmış ürünler, geçmiş kayıtlar bozulmasın diye silinemez.
+
+Diğer: Menü adresi için QR kod oluşturma ekranı bulunur.
+Panele yalnızca kayıtlı ve giriş yapmış kullanıcılar erişir.
+Tüm veriler veritabanında kalıcı olarak saklanır.
+
+Kullanılan teknolojiler
+Sunucu tarafı: C#, ASP.NET Core MVC (.NET 8)
+
+Veritabanı: SQLite, Entity Framework Core
+
+Giriş ve kayıt: ASP.NET Core Identity
+
+Arayüz: HTML, CSS, JavaScript
+
+Durum: Uygulamanın önümüzdeki yaz çay bahçesinde kullanılmaya başlanması planlanmaktadır.
+
+Not: Proje geliştirilirken yapay zekâ araçlarından yararlanılmıştır.
