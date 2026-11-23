@@ -1,0 +1,64 @@
+@model Adisyon?
+@{
+    ViewData["Title"] = $"Masa {ViewBag.Masa.MasaNo}";
+    var masa = (Masa)ViewBag.Masa;
+    var kategoriler = (List<MenuKategori>)ViewBag.Kategoriler;
+    var toplam = Model?.Kalemler.Sum(k => k.Adet * k.BirimFiyat) ?? 0;
+}
+
+<a asp-action="Index" class="btn" style="margin-bottom:16px;">← Masalara Dön</a>
+
+<div class="toplam-kutu">
+    <span>Masa @masa.MasaNo</span>
+    <span>Toplam: @toplam.ToString("0.00") ₺</span>
+</div>
+
+@if (Model != null && Model.Kalemler.Any())
+{
+    <div class="card">
+        <h3>Hesapta Olanlar</h3>
+        @foreach (var kalem in Model.Kalemler)
+        {
+            <div class="urun-satir">
+                <span>@kalem.Urun?.Ad</span>
+                <span>@kalem.Adet x @kalem.BirimFiyat.ToString("0.00") ₺ = @((kalem.Adet * kalem.BirimFiyat).ToString("0.00")) ₺</span>
+            </div>
+        }
+        <form asp-action="HesabiKapat" method="post" style="margin-top:16px;">
+            <input type="hidden" name="masaNo" value="@masa.MasaNo" />
+            <button type="submit" class="btn kirmizi">Hesabı Kapat (Ödeme Alındı)</button>
+        </form>
+    </div>
+}
+
+@foreach (var kategori in kategoriler)
+{
+    <div class="card">
+        <h3>@kategori.Ad</h3>
+        @foreach (var urun in kategori.Urunler)
+        {
+            var kalem = Model?.Kalemler.FirstOrDefault(k => k.UrunId == urun.Id);
+            var adet = kalem?.Adet ?? 0;
+
+            <div class="urun-satir">
+                <span>@urun.Ad — @urun.Fiyat.ToString("0.00") ₺</span>
+                <div class="adet-kontrol">
+                    @if (adet > 0)
+                    {
+                        <form asp-action="UrunCikar" method="post">
+                            <input type="hidden" name="masaNo" value="@masa.MasaNo" />
+                            <input type="hidden" name="urunId" value="@urun.Id" />
+                            <button type="submit">−</button>
+                        </form>
+                        <span>@adet</span>
+                    }
+                    <form asp-action="UrunEkle" method="post">
+                        <input type="hidden" name="masaNo" value="@masa.MasaNo" />
+                        <input type="hidden" name="urunId" value="@urun.Id" />
+                        <button type="submit">+</button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}

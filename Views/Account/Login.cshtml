@@ -1,0 +1,62 @@
+@{
+    ViewData["Title"] = "Giriş Yap";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giriş Yap - Lost Heaven Cafe</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="auth-sayfa">
+        <div class="auth-kart">
+            <img src="~/images/logo-kart.png" alt="Lost Heaven Cafe" class="auth-logo" />
+            <h1 class="auth-baslik">Giriş Yap</h1>
+            <p class="auth-alt-baslik">Garson ve işletmeci paneli</p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="auth-hata">
+                    @foreach (var hata in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <div>@hata.ErrorMessage</div>
+                    }
+                </div>
+            }
+
+            <form method="post">
+                <div class="form-alan">
+                    <label for="email">E-posta</label>
+                    <input type="email" id="email" name="email" value="@ViewBag.Email" autocomplete="email" required />
+                </div>
+                <div class="form-alan">
+                    <label for="sifre">Şifre</label>
+                    <div class="sifre-kutu">
+                        <input type="password" id="sifre" name="sifre" autocomplete="current-password" required />
+                        <button type="button" class="sifre-goster" data-hedef="sifre">Göster</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn yesil btn-tam">Giriş Yap</button>
+            </form>
+
+            <div class="auth-ayrac"></div>
+            <p class="auth-alt">Hesabın yok mu? <a class="auth-link" asp-controller="Account" asp-action="Register">Kayıt ol</a></p>
+            <p class="auth-alt"><a class="auth-link" asp-controller="Home" asp-action="Index">Ana sayfaya dön</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.sifre-goster').forEach(function (dugme) {
+            dugme.addEventListener('click', function () {
+                var alan = document.getElementById(dugme.getAttribute('data-hedef'));
+                var gizli = alan.type === 'password';
+                alan.type = gizli ? 'text' : 'password';
+                dugme.textContent = gizli ? 'Gizle' : 'Göster';
+            });
+        });
+    </script>
+</body>
+</html>

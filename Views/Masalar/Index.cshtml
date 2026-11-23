@@ -1,0 +1,27 @@
+@model List<Masa>
+@{ ViewData["Title"] = "Masalar"; }
+
+<div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <h2 style="margin:0;">Masalar</h2>
+        <span class="canli-saat koyu" id="canliSaat"></span>
+    </div>
+    <div class="masa-grid" style="margin-top:16px;">
+    @foreach (var m in Model)
+    {
+        <a class="masa-kutu @(m.Dolu ? "dolu" : "bos")" asp-action="Detay" asp-route-masaNo="@m.MasaNo">
+            @m.MasaNo
+            <span>@(m.Dolu ? "Dolu" : "Boş")</span>
+        </a>
+    }
+    </div>
+</div>
+
+<script>
+    function canliSaatiGuncelle() {
+        const el = document.getElementById('canliSaat');
+        if (el) el.textContent = new Date().toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'medium' });
+    }
+    canliSaatiGuncelle();
+    setInterval(canliSaatiGuncelle, 1000);
+</script>

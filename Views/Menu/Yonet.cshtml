@@ -1,0 +1,166 @@
+@using LostHeavenCafe.Data
+@model List<MenuKategori>
+@{
+    ViewData["Title"] = "Menü Yönetimi";
+    Func<string?, string?> resimYolu = r => string.IsNullOrEmpty(r)
+        ? null
+        : (r.StartsWith("http") ? r : Url.Content("~/images/urunler/" + r));
+}
+
+@if (TempData["HataMesaji"] != null)
+{
+    <div class="uyari-kutu hata">@TempData["HataMesaji"]</div>
+}
+
+<div class="card">
+    <h2 class="baslik">Yeni Ürün Ekle</h2>
+    <p class="soluk">Fotoğraf eklemek zorunlu değil. Bilgisayardan bir resim seçebilir ya da bir resim adresi yapıştırabilirsin.</p>
+
+    <form asp-action="UrunEkle" method="post" enctype="multipart/form-data">
+        <div class="yeni-urun-grid">
+            <div class="foto-alan">
+                <div class="foto-onizleme" id="yeniOnizleme"><span>Fotoğraf yok</span></div>
+                <label class="btn kucuk ikincil">
+                    Fotoğraf Seç
+                    <input type="file" name="resimDosyasi" id="yeniDosya" accept="image/*" hidden />
+                </label>
+            </div>
+
+            <div>
+                <div class="satir">
+                    <div class="form-alan">
+                        <label>Kategori</label>
+                        <select name="kategoriId">
+                            @foreach (var k in Model)
+                            {
+                                <option value="@k.Id">@k.Ad</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-alan">
+                        <label>Ürün Adı</label>
+                        <input type="text" name="ad" required />
+                    </div>
+                    <div class="form-alan">
+                        <label>Fiyat (₺)</label>
+                        <input type="number" step="0.01" min="0" name="fiyat" required />
+                    </div>
+                </div>
+                <div class="form-alan">
+                    <label>Veya fotoğraf adresi</label>
+                    <input type="text" name="resimUrl" id="yeniUrl" placeholder="https://..." />
+                </div>
+                <button type="submit" class="btn yesil">Ürünü Ekle</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+@foreach (var kategori in Model)
+{
+    var ekUcret = kategori.Ad == ApplicationDbContext.EkUcretKategoriAdi;
+
+    <div class="card">
+        <div class="kategori-ust">
+            <h3>@kategori.Ad</h3>
+            @if (ekUcret)
+            {
+                <span class="rozet gri">Müşteri menüsünde görünmez, adisyona garson ekler</span>
+            }
+        </div>
+
+        @if (!kategori.Urunler.Any())
+        {
+            <p class="soluk">Bu kategoride ürün yok.</p>
+        }
+
+        @foreach (var urun in kategori.Urunler)
+        {
+            var kucukResim = resimYolu(urun.Resim);
+
+            <div class="urun-yonet-satir @(urun.Aktif ? "" : "pasif")">
+                <div class="kucuk-foto">
+                    @if (kucukResim != null)
+                    {
+                        <img src="@kucukResim" alt="@urun.Ad" onerror="this.style.display='none'" />
+                    }
+                    else
+                    {
+                        <span>Foto yok</span>
+                    }
+                </div>
+
+                <div>
+                    <div class="urun-ad">
+                        @urun.Ad
+                        <span class="rozet @(urun.Aktif ? "yesil" : "gri")">@(urun.Aktif ? "Menüde" : "Pasif")</span>
+                    </div>
+                    <form asp-action="UrunFiyatGuncelle" method="post" class="fiyat-form">
+                        <input type="hidden" name="urunId" value="@urun.Id" />
+                        <input type="number" step="0.01" min="0" name="fiyat" value="@urun.Fiyat.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)" />
+                        <span>₺</span>
+                        <button type="submit" class="btn kucuk ikincil">Fiyatı Kaydet</button>
+                    </form>
+                </div>
+
+                <div class="urun-islem">
+                    <form asp-action="UrunResimGuncelle" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="urunId" value="@urun.Id" />
+                        <label class="btn kucuk ikincil">
+                            Fotoğraf Değiştir
+                            <input type="file" name="resimDosyasi" accept="image/*" hidden onchange="this.form.submit()" />
+                        </label>
+                    </form>
+
+                    <details class="url-detay">
+                        <summary>Adresle ekle</summary>
+                        <form asp-action="UrunResimGuncelle" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="urunId" value="@urun.Id" />
+                            <input type="text" name="resimUrl" placeholder="https://..." />
+                            <button type="submit" class="btn kucuk ikincil">Uygula</button>
+                        </form>
+                    </details>
+
+                    <div class="islem-satir">
+                        <form asp-action="UrunDurumDegistir" method="post">
+                            <input type="hidden" name="urunId" value="@urun.Id" />
+                            <button type="submit" class="btn kucuk ikincil">@(urun.Aktif ? "Pasif Yap" : "Aktif Yap")</button>
+                        </form>
+                        <form asp-action="UrunSil" method="post" onsubmit="return confirm('Bu ürünü tamamen silmek istediğine emin misin?');">
+                            <input type="hidden" name="urunId" value="@urun.Id" />
+                            <button type="submit" class="btn kucuk kirmizi">Sil</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<script>
+    var onizleme = document.getElementById('yeniOnizleme');
+
+    function onizlemeGoster(kaynak) {
+        if (kaynak) {
+            onizleme.style.backgroundImage = 'url("' + kaynak + '")';
+            onizleme.classList.add('dolu');
+        } else {
+            onizleme.style.backgroundImage = '';
+            onizleme.classList.remove('dolu');
+        }
+    }
+
+    document.getElementById('yeniDosya').addEventListener('change', function () {
+        var dosya = this.files && this.files[0];
+        if (!dosya) { onizlemeGoster(''); return; }
+        var okuyucu = new FileReader();
+        okuyucu.onload = function (e) { onizlemeGoster(e.target.result); };
+        okuyucu.readAsDataURL(dosya);
+    });
+
+    document.getElementById('yeniUrl').addEventListener('change', function () {
+        if (!document.getElementById('yeniDosya').files.length) {
+            onizlemeGoster(this.value.trim());
+        }
+    });
+</script>

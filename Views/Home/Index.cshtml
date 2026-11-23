@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Lost Heaven Cafe";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lost Heaven Cafe</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="landing-hero">
+        <div class="landing-ust">
+            <a asp-controller="Account" asp-action="Login" class="btn landing-btn">Giriş Yap</a>
+            <a asp-controller="Account" asp-action="Register" class="btn landing-btn altin">Kayıt Ol</a>
+        </div>
+
+        <div class="landing-orta">
+            <img src="~/images/logo.png" alt="Lost Heaven Cafe" class="landing-logo" />
+            <h1>Lost Heaven Cafe</h1>
+            <p>Armutlu, Yalova — Panel Girişi</p>
+        </div>
+    </div>
+</body>
+</html>
